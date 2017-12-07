@@ -39,17 +39,18 @@ class MyStreamer(tweepy.StreamListener):
                     api.send_direct_message(screen_name=dm_sender, text=text)
                 else:
                     haiku = haikubot.make_haiku(dm_text)
-                    #api.send_direct_message(screen_name=dm_sender, text=haiku)
+                    api.send_direct_message(screen_name=dm_sender, text=haiku)
         elif decoded.has_key('text'):        # Is not a Direct Message
             rt = decoded['retweeted']
             if not rt:
                 text = decoded['text']
                 request = re.sub(u'(@.+? )','',text)
                 sender = decoded['user']['screen_name']
-                status_id = decode['id']
+                status_id = decoded['id']
+                print status_id
                 if not sender in exclusion_list:
                     haiku = haikubot.make_haiku(request)
-                    api.update_status(status='@{} asked for {}'.format(sender,request)+'\n'+haiku,in_reply_to_status_id=status_id)
+                    api.update_status(status='@{}'.format(sender)+'\n'+haiku,in_reply_to_status_id=status_id)
 
 
         
