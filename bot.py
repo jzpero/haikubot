@@ -3,6 +3,7 @@ from secrets import *
 import tweepy
 import json
 import haikubot
+import re
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_secret)
@@ -21,10 +22,12 @@ class MyStreamer(tweepy.StreamListener):
     def on_error(self, status_code):
         if status_code == 420:
             return False
-
+    
     def on_data(self, data):
-        exclusion_list = ['938597347046580224', 'haikus420']
+        exclusion_list = ['938597347046580224', 'haikus420', 'hai_cudi']
         decoded = json.loads(data)
+        print str(decoded)
+        #Is a Direct Message
         if decoded.has_key('direct_message'):
             dm = decoded['direct_message']
             dm_sender_id = dm['sender_id_str']
@@ -35,17 +38,28 @@ class MyStreamer(tweepy.StreamListener):
                     text = 'Sorry. No haiku or lyrics found.'
                     api.send_direct_message(screen_name=dm_sender, text=text)
                 else:
-                    print dm_sender, 'asks for', dm_text
                     haiku = haikubot.make_haiku(dm_text)
-                    api.send_direct_message(screen_name=dm_sender, text=haiku)
+                    #api.send_direct_message(screen_name=dm_sender, text=haiku)
+        elif decoded.has_key('text'):        # Is not a Direct Message
+            rt = decoded['retweeted']
+            if not rt:
+                text = decoded['text']
+                request = re.sub(u'(@.+? )','',text)
+                sender = decoded['user']['screen_name']
+                if not sender in exclusion_list:
+                    haiku = haikubot.make_haiku(request)
+                    api.update_status(status='@{} asked for {}'.format(sender,request)+'\n'+haiku,)
+
+
+        
                     
     
 
 if __name__ == '__main__':
-    with open('all_dms.txt','w') as out:
-        dms = api.direct_messages()
-        for dm in dms:
-            out.write(str(dm))
+    #with open('all_dms.txt','w') as out:
+    #    dms = api.direct_messages()
+    #    for dm in dms:
+    #        out.write(str(dm))
     myStreamListener = MyStreamer()
     stream = tweepy.Stream(auth, myStreamListener)
-    stream.userstream()
+    stream.userstream(async=True)
