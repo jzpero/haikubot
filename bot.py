@@ -1,8 +1,6 @@
 from secrets import *
 
 import tweepy
-from textblob import TextBlob
-from datetime import datetime
 import json
 import haikubot
 
