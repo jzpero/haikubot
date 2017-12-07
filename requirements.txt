@@ -1,0 +1,4 @@
+nltk==3.2.3
+beautifulsoup4==4.6.0
+textstat==0.4.1
+tweepy==3.5.0
