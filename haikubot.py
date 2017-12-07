@@ -63,10 +63,14 @@ def make_haiku(artist):
                 source = song_page
 
                 #print line, n
+                # I only want unique lines... insert those that are not already in the list
                 if n == 5:
-                    five_list.append((line, n, source))
-                if n == 7:
-                    seven_list.append((line, n, source))
+                    if not (line ,5) in five_list:
+                        five_list.append((line, n))
+                elif n == 7:
+                    if not (line, 7) in seven_list:
+                        seven_list.append((line, n))
+
     
     
     if len(five_list) >= 2 and len(seven_list) >= 1:

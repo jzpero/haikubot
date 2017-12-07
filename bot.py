@@ -26,7 +26,7 @@ class MyStreamer(tweepy.StreamListener):
     def on_data(self, data):
         exclusion_list = ['938597347046580224', 'haikus420', 'hai_cudi']
         decoded = json.loads(data)
-        print str(decoded)
+        #print str(decoded)
         #Is a Direct Message
         if decoded.has_key('direct_message'):
             dm = decoded['direct_message']
