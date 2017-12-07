@@ -46,9 +46,10 @@ class MyStreamer(tweepy.StreamListener):
                 text = decoded['text']
                 request = re.sub(u'(@.+? )','',text)
                 sender = decoded['user']['screen_name']
+                status_id = decode['id']
                 if not sender in exclusion_list:
                     haiku = haikubot.make_haiku(request)
-                    api.update_status(status='@{} asked for {}'.format(sender,request)+'\n'+haiku,)
+                    api.update_status(status='@{} asked for {}'.format(sender,request)+'\n'+haiku,in_reply_to_status_id=status_id)
 
 
         
