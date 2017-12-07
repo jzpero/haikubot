@@ -29,9 +29,13 @@ class MyStreamer(tweepy.StreamListener):
             dm_text = dm['text']
             dm_sender = dm['sender_screen_name']
             if dm_sender != 'hai_cudi':
-                print dm_sender,'asks for',dm_text
-                haiku = haikubot.make_haiku(dm_text)
-                api.send_direct_message(screen_name=dm_sender,text=haiku)
+                if dm_sender != 'jzpero':
+                    print dm_sender,'asks for',dm_text
+                    haiku = haikubot.make_haiku(dm_text)
+                    api.send_direct_message(screen_name=dm_sender,text=haiku)
+                else:
+                    text = 'Sorry. No haiku or lyrics found.'
+                    api.send_direct_message(screen_name=dm_sender, text=text)
     
 
 if __name__ == '__main__':
