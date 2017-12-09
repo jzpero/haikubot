@@ -15,6 +15,7 @@ def nsyl(word):
 
 user_agent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'
 headers = {'User-Agent': user_agent, }
+error_message = "Sorry. No haiku or lyrics found."
 
 def get_artist_song_links(artist):
     req = urllib2.Request(
@@ -38,7 +39,7 @@ def make_haiku(artist):
     try:
         artist_song_links = get_artist_song_links(artist)
     except:
-        return "Sorry. No haiku or lyrics found."
+        return error_message
 
     five_list = []
     seven_list = []
@@ -47,13 +48,7 @@ def make_haiku(artist):
         lyrics = get_lyrics(song_page)
         for line in lyrics:
             bad = False
-            #for profanity in profanities:
-            #    if profanity.upper() in line.upper():
-            #        bad = True
-            #        break
-            if '[' in line or ']' in line:
-                bad = True
-            if len(line) == 0:
+            if '[' in line or ']' in line or len(line) == 0:
                 bad = True
             if not bad:
                 words = re.findall(u'[A-z\']+',line)
@@ -62,7 +57,6 @@ def make_haiku(artist):
                     n += nsyl(word)                
                 source = song_page
 
-                #print line, n
                 # I only want unique lines... insert those that are not already in the list
                 if n == 5:
                     if not (line ,5) in five_list:
@@ -71,7 +65,6 @@ def make_haiku(artist):
                     if not (line, 7) in seven_list:
                         seven_list.append((line, n))
 
-    
     
     if len(five_list) >= 2 and len(seven_list) >= 1:
         five_pick_one = random.randint(0,len(five_list)-1)
@@ -85,4 +78,4 @@ def make_haiku(artist):
 
         haiku = '\n'.join([first_line, second_line, third_line])
         return haiku
-    return "Sorry. No haiku or lyrics found."
+    return error_message
